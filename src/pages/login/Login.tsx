@@ -3,28 +3,35 @@ import { Link, useNavigate } from "react-router";
 import { EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../../components/field/LabelField";
 import Input from "../../components/field/InputField";
-import CheckboxField from "../../components/field/CheckboxField";
 import { PATH } from "../../configs/path";
 import TextButton from "../../components/button/TextButton";
+import { httpRequest } from "../../services/initRequest";
 
 function Login() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = React.useState(false);
-  const [isChecked, setIsChecked] = React.useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    // const bodyData = {
-    //   "data": {
-    //     "email": "hoanghai@gmail.com",
-    //     "password": "123456"
-    //   }
-    // }
-
-    const access_token = 'tony';
-    window.localStorage.setItem('access_token', access_token);
-    navigate(PATH.ROOT);
+    try {
+      const bodyData = {
+        "data": {
+          "email": "hoanghai@gmail.com",
+          "password": "123456"
+        }
+      }
+      const res = await httpRequest('/api/user/signin', {
+        method: 'POST',
+        data: bodyData,
+      })
+      const { access_token, refresh_token } = res?.data || {};
+      window.localStorage.setItem('access_token', access_token);
+      window.localStorage.setItem('refresh_token', refresh_token);
+      navigate(PATH.ROOT);
+    } catch (err) {
+      // dispatch action shoiw dialog error
+    }
   }
   
   return (

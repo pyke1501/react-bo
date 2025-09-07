@@ -7,6 +7,10 @@ import { BrowserRouter } from 'react-router'
 
 import { ThemeProvider } from './contexts/ThemeContext.tsx'
 import { SidebarProvider } from './contexts/SidebarContext.tsx'
+import { initRequest } from './services/initRequest.ts'
+
+
+initRequest();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

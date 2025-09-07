@@ -1,9 +1,9 @@
 // use: import { Login } from './Login'
 // export { default as Login } from './Login';
 
-import Dashboard from './Dashboard';
+import Error403 from './403';
 
-export default Dashboard;
+export default Error403;
 
 
 
