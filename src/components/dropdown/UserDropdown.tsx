@@ -2,12 +2,17 @@ import { useState } from "react";
 import { PATH } from "../../configs/path";
 import { Dropdown } from "./Dropdown";
 import { DropdownItem } from "./DropdownItem";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store";
 
 // 5 page -> 3 call api -> send token in header api (x3) -> server get token -> from token get user -> yes -> accept api -> return data
 // 10 page -> 30 api -> send token in header api x30
 
 export default function UserDropdown() {
+  const user = useSelector((state: RootState) => state.user.user);
   const [isOpen, setIsOpen] = useState(false);
+
+  console.log('user :', user)
 
   function handleLogout() {
     window.localStorage.clear();
@@ -31,7 +36,7 @@ export default function UserDropdown() {
           <img src="https://avatars.steamstatic.com/009d272e2b496aa0758a86a17eac5f7716a99133_full.jpg" alt="User" />
         </span>
 
-        <span className="block mr-1 font-medium text-theme-sm">tony@gmail.com</span>
+        <span className="block mr-1 font-medium text-theme-sm">{user?.email}</span>
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
@@ -58,12 +63,12 @@ export default function UserDropdown() {
         className="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark"
       >
         <div>
-          <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-            Musharof Chowdhury
-          </span>
-          <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-            randomuser@pimjo.com
-          </span>
+          <p className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
+            {user?.last_name} {user?.first_name} - <span className="capitalize">{user?.role}</span>
+          </p>
+          <p className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
+            {user?.email}
+          </p>
         </div>
 
         <ul className="flex flex-col gap-1 pt-4 pb-3 border-b border-gray-200 dark:border-gray-800">

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { PATH } from "../configs/path";
 
 const configs = {
   baseURL: 'https://tony-auth-express-vdee.vercel.app',
@@ -42,20 +43,26 @@ export const initRequest = () => {
 
     // token expired
     if (error?.response?.status === 401) {
-      const refresh_token = window.localStorage.getItem('refresh_token');
-      const bodyData = {
-        "data": {
-            "refresh_token": refresh_token
+      try {
+        const refresh_token = window.localStorage.getItem('refresh_token');
+        const bodyData = {
+          "data": {
+              "refresh_token": refresh_token
+          }
         }
+        const res = await httpRequest('/api/user/refresh-token', {
+          method: 'POST',
+          data: bodyData,
+        });
+        const access_token = res.data.access_token;
+        window.localStorage.setItem('access_token', access_token);
+        error.config.headers['x-auth-token'] = access_token;
+        return httpRequest(error.config)
+      } catch (_) {
+        window.localStorage.clear();
+        window.sessionStorage.clear();
+        window.location.href = PATH.LOGIN
       }
-      const res = await httpRequest('/api/user/refresh-token', {
-        method: 'POST',
-        data: bodyData,
-      });
-      const access_token = res.data.access_token;
-      window.localStorage.setItem('access_token', access_token);
-      error.config.headers['x-auth-token'] = access_token;
-      return httpRequest(error.config)
     }
 
     // hande common error
